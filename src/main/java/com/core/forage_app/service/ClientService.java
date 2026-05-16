@@ -24,4 +24,8 @@ public class ClientService {
     public void delete(Client client) {
         this.clientRepository.delete(client);
     }
+
+    public Client findById(int id) {
+        return this.clientRepository.findById(id).orElse(null);
+    }
 }

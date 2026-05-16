@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande - Form</title>
+</head>
+
+<body>
+    <form th:action="${demande.id != 0} ? @{/demande/edit} : @{/demande/save}" th:object="${demande}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <select id="client" th:field="*{client}">
+            <option value="">Select a client</option>
+            <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.nom}">
+            </option>
+        </select>
+
+        <select id="commune" th:field="*{commune}">
+            <option value="">Select a commune</option>
+            <option th:each="commune : ${communes}" th:value="${commune.id}" th:text="${commune.nom}">
+            </option>
+        </select>
+
+        <label for="lieu">Lieu:</label>
+        <input type="text" id="lieu" th:field="*{lieu}" />
+
+        <label for="reference">Reference:</label>
+        <input type="text" id="reference" th:field="*{reference}">
+
+        <button type="submit" th:text="${demande.id != 0} ? 'Edit' : 'Save'">
+        </button>
+    </form>
+</body>
+
+</html>

@@ -24,4 +24,8 @@ public class CommuneService {
     public void delete(Commune commune) {
         this.communeRepository.delete(commune);
     }
+
+    public Commune findById(int id) {
+        return this.communeRepository.findById(id).orElse(null);
+    }
 }

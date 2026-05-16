@@ -2,6 +2,7 @@ package com.core.forage_app.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,7 +39,7 @@ public class Demande {
     @JoinColumn(name = "id_client")
     private Client client;
 
-    @OneToMany(mappedBy = "demande")
+    @OneToMany(mappedBy = "demande", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DemandeStatut> listDemandeStatut;
 
     public List<DemandeStatut> getListDemandeStatut() {

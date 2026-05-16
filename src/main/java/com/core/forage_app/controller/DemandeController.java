@@ -92,7 +92,16 @@ public class DemandeController {
 
     @PostMapping("/demande/edit")
     public String edit(@ModelAttribute Demande demande) {
-        this.demandeService.save(demande);
+        Demande demandeExistante = this.demandeService.findById(demande.getId());
+
+        if (demandeExistante != null) {
+            demandeExistante.setLieu(demande.getLieu());
+            demandeExistante.setReference(demande.getReference());
+            demandeExistante.setClient(demande.getClient());
+            demandeExistante.setCommune(demande.getCommune());
+            this.demandeService.save(demandeExistante);
+        }
+
         return "redirect:/demande/list";
     }
 

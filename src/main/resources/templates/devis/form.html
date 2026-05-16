@@ -4,10 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devis - Form AJAX</title>
+    <title>Devis - Form Template</title>
     <style>
         .hidden {
             display: none;
+        }
+
+        .ligne-devis {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
     </style>
 </head>
@@ -15,7 +24,8 @@
 <body>
 
     <form id="searchForm" onsubmit="return false;">
-        <input type="text" id="referenceInput" placeholder="Ex: DEMANDE01" autocomplete="off" />
+        <input type="text" id="referenceInput" th:data-url="@{/devis/findDemande}" placeholder="Ex: DEMANDE01"
+            autocomplete="off" />
     </form>
 
     <div id="demandeBlock" class="demande hidden">
@@ -25,76 +35,52 @@
         <p id="txtCommune"></p>
     </div>
 
-    <div id="typeBlock" class="type hidden">
-        <select id="typeDevis" name="typeDevis">
-        </select>
-    </div>
+    <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
+        <div id="typeBlock" class="type hidden">
+            <select id="typeDevis" name="typeDevis"></select>
+        </div>
 
-    <p id="errorMessage" style="color: red;"></p>
+        <div id="lignesContainer"></div>
 
-    <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            const referenceInput = document.getElementById("referenceInput");
+        <div id="addBlock" class="type hidden">
+            <button type="button" id="btnAddLigne">Add</button>
+        </div>
+    </form>
 
-            const demandeBlock = document.getElementById("demandeBlock");
-            const typeBlock = document.getElementById("typeBlock");
-            const typeDevisSelect = document.getElementById("typeDevis");
-            const errorMsg = document.getElementById("errorMessage");
+    <template id="ligneDevisTemplate">
+        <div class="ligne-devis">
+            <input type="text" class="input-designation" placeholder="Désignation" required />
+            <input type="text" class="input-description" placeholder="Description" />
+            <input type="number" class="input-qty qty" placeholder="Qte" min="1" value="1" style="width: 60px;"
+                required />
+            <input type="number" class="input-pu pu" placeholder="P.U" min="0" step="0.01" value="0"
+                style="width: 100px;" required />
+            <input type="number" class="input-total total" placeholder="Montant" style="width: 120px;" readonly />
+            <button type="button" class="btn-remove" style="color: red;">Remove</button>
+        </div>
+    </template>
 
-            // Événement 'input' : déclenché à CHAQUE lettre tapée
-            referenceInput.addEventListener("input", function () {
-                const refValue = referenceInput.value.trim();
+    <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
 
-                // On n'envoie la requête que si la référence fait au moins 3 caractères
-                if (refValue.length < 3) {
-                    masquerTout();
-                    return;
-                }
+        <div id="typeBlock" class="type hidden">
+            <select id="typeDevis" name="typeDevis"></select>
+        </div>
 
-                // Utilisation des backticks ` pour construire proprement l'URL avec sa variable
-                const url = /*[[@{/devis/findDemande}]]*/ '/devis/findDemande';
+        <div id="lignesContainer"></div>
 
-                fetch(`${url}?reference=${encodeURIComponent(refValue)}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Erreur serveur HTTP " + response.status);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("Données AJAX reçues :", data);
-                        if (data.found) {
-                            errorMsg.innerText = "";
+        <div id="submitBlock" class="hidden" style="margin-top: 15px;">
+            <button type="submit" style="background-color: green; color: white; padding: 10px 20px;">
+                Enregistrer le devis
+            </button>
+        </div>
 
-                            // 1. Remplir la demande
-                            document.getElementById("txtLieu").innerText = "Lieu : " + data.lieu;
-                            document.getElementById("txtReference").innerText = "Réf : " + data.reference;
-                            document.getElementById("txtClient").innerText = "Client : " + data.clientNom;
-                            document.getElementById("txtCommune").innerText = "Commune : " + data.communeNom;
-                            demandeBlock.classList.remove("hidden");
+        <div id="addBlock" class="type hidden">
+            <button type="button" id="btnAddLigne">Add</button>
+        </div>
+    </form>
 
-                            // 2. Remplir le sélecteur de Devis
-                            if (data.hasTypeDevis) {
-                                typeDevisSelect.innerHTML = `<option value="${data.typeDevisId}">${data.typeDevisNom}</option>`;
-                                typeBlock.classList.remove("hidden");
-                            } else {
-                                typeBlock.classList.add("hidden");
-                            }
-                        } else {
-                            masquerTout();
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Erreur lors du Fetch AJAX :", error);
-                    });
-            });
+    <script th:src="@{/static/js/devis-form.js}"></script>
 
-            function masquerTout() {
-                demandeBlock.classList.add("hidden");
-                typeBlock.classList.add("hidden");
-            }
-        });
-    </script>
 </body>
 
 </html>

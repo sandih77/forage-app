@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List - Devis</title>
+</head>
+
+<body>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Demande</th>
+                <th>Type de devis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="devis : ${devis}">
+                <td th:text="${devis.id}"></td>
+
+                <td th:text="${devis.dateDevis}"></td>
+
+                <td th:text="${devis.demande?.reference} ?: 'Aucune demande'"></td>
+
+                <td th:text="${devis.typeDevis?.type} ?: 'Aucun type'"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

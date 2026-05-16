@@ -101,4 +101,10 @@ public class DevisController {
 
         return "redirect:/devis/showForm?success=enregistre";
     }
+
+    @GetMapping("/devis/list")
+    public String findAll(Model model) {
+        model.addAttribute("devis", this.devisService.findAll());
+        return "devis/list";
+    }
 }

@@ -79,7 +79,7 @@ public class DemandeController {
     }
 
     @GetMapping("/demande/edit/{id}")
-    public String showFormEdit(@PathVariable int id, Model model) {
+    public String showFormEdit(@PathVariable("id") int id, Model model) {
 
         Demande demande = this.demandeService.findById(id);
 
@@ -97,7 +97,7 @@ public class DemandeController {
     }
 
     @GetMapping("/demande/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable("id") int id) {
         Demande demande = this.demandeService.findById(id);
         this.demandeService.delete(demande);
         return "redirect:/demande/list";

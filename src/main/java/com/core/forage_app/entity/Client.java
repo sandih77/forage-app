@@ -1,6 +1,7 @@
 package com.core.forage_app.entity;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,5 +61,20 @@ public class Client {
 
     public void setDemandes(List<Demande> demandes) {
         this.demandes = demandes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Client client = (Client) o;
+        return id == client.id; // On compare uniquement sur l'ID technique
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devis - Form Template</title>
+    <title>Devis - Form</title>
     <style>
         .hidden {
             display: none;
@@ -36,34 +36,11 @@
     </div>
 
     <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
-        <div id="typeBlock" class="type hidden">
-            <select id="typeDevis" name="typeDevis"></select>
-        </div>
-
-        <div id="lignesContainer"></div>
-
-        <div id="addBlock" class="type hidden">
-            <button type="button" id="btnAddLigne">Add</button>
-        </div>
-    </form>
-
-    <template id="ligneDevisTemplate">
-        <div class="ligne-devis">
-            <input type="text" class="input-designation" placeholder="Désignation" required />
-            <input type="text" class="input-description" placeholder="Description" />
-            <input type="number" class="input-qty qty" placeholder="Qte" min="1" value="1" style="width: 60px;"
-                required />
-            <input type="number" class="input-pu pu" placeholder="P.U" min="0" step="0.01" value="0"
-                style="width: 100px;" required />
-            <input type="number" class="input-total total" placeholder="Montant" style="width: 120px;" readonly />
-            <button type="button" class="btn-remove" style="color: red;">Remove</button>
-        </div>
-    </template>
-
-    <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
+        
+        <input type="hidden" id="demandeIdInput" name="demande.id" />
 
         <div id="typeBlock" class="type hidden">
-            <select id="typeDevis" name="typeDevis"></select>
+            <select id="typeDevis" name="typeDevis.id"></select>
         </div>
 
         <div id="lignesContainer"></div>
@@ -78,6 +55,17 @@
             <button type="button" id="btnAddLigne">Add</button>
         </div>
     </form>
+
+    <template id="ligneDevisTemplate">
+        <div class="ligne-devis">
+            <input type="text" class="designation" placeholder="Désignation" required />
+            <input type="text" class="description" placeholder="Description" />
+            <input type="number" class="quantite" placeholder="Qte" min="1" value="1" style="width: 60px;" required />
+            <input type="number" class="prixUnitaire" placeholder="P.U" min="0" step="0.01" value="0" style="width: 100px;" required />
+            <input type="number" class="input-total total" placeholder="Montant" style="width: 120px;" readonly />
+            <button type="button" class="btn-remove" style="color: red;">Remove</button>
+        </div>
+    </template>
 
     <script th:src="@{/static/js/devis-form.js}"></script>
 

@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const nbLignes = lignesContainer.querySelectorAll(".ligne-devis").length;
 
         if (nbLignes > 0) {
-            submitBlock.classList.remove("hidden"); 
+            submitBlock.classList.remove("hidden");
         } else {
-            submitBlock.classList.add("hidden");    
+            submitBlock.classList.add("hidden");
         }
     }
 
@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(data => {
                 if (data.found) {
+                    document.getElementById("demandeIdInput").value = data.id;
                     document.getElementById("txtLieu").innerText = "Lieu : " + data.lieu;
                     document.getElementById("txtReference").innerText = "Réf : " + data.reference;
                     document.getElementById("txtClient").innerText = "Client : " + data.clientNom;
@@ -65,19 +66,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
+    // Action au clic sur ADD
     btnAddLigne.addEventListener("click", function () {
         const clone = template.content.cloneNode(true);
         const divLigne = clone.querySelector(".ligne-devis");
         divLigne.id = "ligne_" + compteurLigne;
 
-        clone.querySelector(".input-designation").name = `lignes[${compteurLigne}].designation`;
-        clone.querySelector(".input-description").name = `lignes[${compteurLigne}].description`;
-        clone.querySelector(".input-qty").name = `lignes[${compteurLigne}].quantite`;
-        clone.querySelector(".input-pu").name = `lignes[${compteurLigne}].prixUnitaire`;
-        clone.querySelector(".input-total").name = `lignes[${compteurLigne}].montant`;
+        clone.querySelector(".designation").name = `lignes[${compteurLigne}].designation`;
+        clone.querySelector(".description").name = `lignes[${compteurLigne}].description`;
+        clone.querySelector(".quantite").name = `lignes[${compteurLigne}].quantite`;
+        clone.querySelector(".prixUnitaire").name = `lignes[${compteurLigne}].prixUnitaire`;
+        clone.querySelector(".total").name = `lignes[${compteurLigne}].montant`;
 
-        const inputQty = clone.querySelector(".qty");
-        const inputPu = clone.querySelector(".pu");
+        const inputQty = clone.querySelector(".quantite");
+        const inputPu = clone.querySelector(".prixUnitaire");
         const inputTotal = clone.querySelector(".total");
 
         function calculerMontant() {
@@ -94,11 +96,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         lignesContainer.appendChild(clone);
+
         compteurLigne++;
         gererVisibiliteBoutonEnregistrer();
     });
 
     function masquerTout() {
+        document.getElementById("demandeIdInput").value = "";
         demandeBlock.classList.add("hidden");
         typeBlock.classList.add("hidden");
         addBlock.classList.add("hidden");

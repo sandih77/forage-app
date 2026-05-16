@@ -12,7 +12,7 @@
     <mvc:annotation-driven />
 
     <!-- Indique à Spring où chercher vos contrôleurs (Adaptez le package) -->
-    <context:component-scan base-package="com.core.forage_app.controller" />
+    <context:component-scan base-package="com.core.forage_app" />
 
     <!-- Gestion des ressources statiques (CSS, JS) -->
     <mvc:resources mapping="/static/**" location="classpath:/static/" />

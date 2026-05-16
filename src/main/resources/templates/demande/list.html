@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List - Demande</title>
+</head>
+
+<body>
+    <form th:action="@{/demande/search}" method="get">
+
+        <input type="text" name="client" placeholder="Nom du client..." />
+
+        <select name="communeId">
+            <option value="">Toutes les communes</option>
+            <option th:each="commune : ${communes}" th:value="${commune.id}" th:text="${commune.nom}">
+            </option>
+        </select>
+
+        <input type="text" name="lieu" placeholder="Lieu..." />
+
+        <button type="submit">Rechercher</button>
+    </form>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Commune</th>
+                <th>Lieu</th>
+                <th>Référence</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="demande : ${demandes}">
+                <td th:text="${demande.id}"></td>
+
+                <td th:text="${demande.client?.nom} ?: 'Aucun client'"></td>
+
+                <td th:text="${demande.commune?.nom} ?: 'Non renseignée'"></td>
+
+                <td th:text="${demande.lieu}"></td>
+                <td th:text="${demande.reference}"></td>
+                <td>
+                    <a th:href="@{/demande/edit/{id}(id=${demande.id})}">Edit</a>
+                    <a th:href="@{/demande/delete/{id}(id=${demande.id})}"
+                        onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

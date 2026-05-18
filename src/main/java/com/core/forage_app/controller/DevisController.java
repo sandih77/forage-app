@@ -1,7 +1,9 @@
 package com.core.forage_app.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,16 +61,41 @@ public class DevisController {
             response.put("clientNom", demande.getClient() != null ? demande.getClient().getNom() : "Aucun");
             response.put("communeNom", demande.getCommune() != null ? demande.getCommune().getNom() : "Aucune");
 
-            DemandeStatut demandeStatutActuelle = demandeStatutService.findByDemandeId(demande.getId());
+            DemandeStatut demandeStatutActuelle = demandeStatutService.findTopByDemandeIdOrderByIdDesc(demande.getId());
             if (demandeStatutActuelle != null && demandeStatutActuelle.getStatut() != null
                     && demandeStatutActuelle.getStatut().getId() == 1) {
                 TypeDevis td = this.typeDevisService.findByType("Etude");
-                if (td != null) {
-                    response.put("id", demande.getId());
-                    response.put("hasTypeDevis", true);
-                    response.put("typeDevisId", td.getId());
-                    response.put("typeDevisNom", td.getType());
+                List<TypeDevis> listTd = new ArrayList<>();
+                listTd.add(td);
+                List<Map<String, Object>> typeDevisList = new ArrayList<>();
+
+                for (TypeDevis t : listTd) {
+                    Map<String, Object> tdMap = new HashMap<>();
+                    tdMap.put("id", t.getId());
+                    tdMap.put("nom", t.getType());
+
+                    typeDevisList.add(tdMap);
                 }
+
+                response.put("id", demande.getId());
+                response.put("hasTypeDevis", true);
+                response.put("typeDevis", typeDevisList);
+
+            } else {
+                List<TypeDevis> listTd = this.typeDevisService.findAll();
+                List<Map<String, Object>> typeDevisList = new ArrayList<>();
+
+                for (TypeDevis t : listTd) {
+                    Map<String, Object> tdMap = new HashMap<>();
+                    tdMap.put("id", t.getId());
+                    tdMap.put("nom", t.getType());
+
+                    typeDevisList.add(tdMap);
+                }
+
+                response.put("id", demande.getId());
+                response.put("hasTypeDevis", true);
+                response.put("typeDevis", typeDevisList);
             }
         } else {
             response.put("found", false);
@@ -80,14 +107,14 @@ public class DevisController {
     @PostMapping("/devis/save")
     public String saveDevis(@ModelAttribute DevisForm devisForm) {
         DemandeStatut demandeStatut = this.demandeStatutService.findByDemandeId(devisForm.getDemande().getId());
-        
+
         if (demandeStatut.getStatut().getId() == 1 && demandeStatut != null) {
             DemandeStatut newDemandeStatut = new DemandeStatut();
             newDemandeStatut.setDateStatut(LocalDateTime.now());
             newDemandeStatut.setDemande(devisForm.getDemande());
             newDemandeStatut.setStatut(this.statutService.findById(2));
             this.demandeStatutService.save(newDemandeStatut);
-        } 
+        }
 
         if (devisForm.getDemande() == null || devisForm.getLignes().isEmpty()) {
             return "redirect:/devis/showForm?error=donnees_invalides";

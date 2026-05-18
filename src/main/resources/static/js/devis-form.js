@@ -49,10 +49,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     addBlock.classList.remove("hidden");
 
                     if (data.hasTypeDevis) {
-                        typeDevisSelect.innerHTML = `<option value="${data.typeDevisId}">${data.typeDevisNom}</option>`;
-                        typeBlock.classList.remove("hidden");
+                        typeDevisSelect.innerHTML = "";
+                        data.typeDevis.forEach(td => {
+                            const option = document.createElement("option");
 
+                            option.value = td.id;
+                            option.textContent = td.nom;
+
+                            typeDevisSelect.appendChild(option);
+                        });
+
+                        typeBlock.classList.remove("hidden");
                         addBlock.classList.remove("hidden");
+
                     } else {
                         typeBlock.classList.add("hidden");
                         addBlock.classList.add("hidden");

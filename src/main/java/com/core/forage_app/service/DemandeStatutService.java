@@ -15,6 +15,10 @@ public class DemandeStatutService {
         return this.demandeStatutRepository.findByDemandeId(id);
     }
 
+    public DemandeStatut findTopByDemandeIdOrderByIdDesc(int id) {
+        return this.demandeStatutRepository.findTopByDemandeIdOrderByIdDesc(id);
+    }
+
     public void save(DemandeStatut demandeStatut) {
         this.demandeStatutRepository.save(demandeStatut);
     }

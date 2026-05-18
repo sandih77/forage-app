@@ -6,4 +6,5 @@ import com.core.forage_app.entity.DemandeStatut;
 
 public interface DemandeStatutRepository extends JpaRepository<DemandeStatut, Integer> {
     public DemandeStatut findByDemandeId(int demandeId);  
+    public DemandeStatut findTopByDemandeIdOrderByIdDesc(int demandeId);
 }

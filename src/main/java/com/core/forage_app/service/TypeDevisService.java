@@ -1,5 +1,7 @@
 package com.core.forage_app.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +15,9 @@ public class TypeDevisService {
 
     public TypeDevis findByType(String type) {
         return this.typeDevisRepository.findByType(type);
+    }
+
+    public List<TypeDevis> findAll() {
+        return this.typeDevisRepository.findAll();
     }
 }

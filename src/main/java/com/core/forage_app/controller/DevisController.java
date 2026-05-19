@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.core.forage_app.dto.DevisForm;
 import com.core.forage_app.entity.Demande;
 import com.core.forage_app.entity.DemandeStatut;
+import com.core.forage_app.entity.Devis;
 import com.core.forage_app.entity.TypeDevis;
 import com.core.forage_app.service.DemandeService;
 import com.core.forage_app.service.DemandeStatutService;
@@ -106,13 +108,19 @@ public class DevisController {
 
     @PostMapping("/devis/save")
     public String saveDevis(@ModelAttribute DevisForm devisForm) {
-        DemandeStatut demandeStatut = this.demandeStatutService.findByDemandeId(devisForm.getDemande().getId());
+        DemandeStatut demandeStatut = this.demandeStatutService.findTopByDemandeIdOrderByIdDesc(devisForm.getDemande().getId());
 
         if (demandeStatut.getStatut().getId() == 1 && demandeStatut != null) {
             DemandeStatut newDemandeStatut = new DemandeStatut();
             newDemandeStatut.setDateStatut(LocalDateTime.now());
             newDemandeStatut.setDemande(devisForm.getDemande());
             newDemandeStatut.setStatut(this.statutService.findById(2));
+            this.demandeStatutService.save(newDemandeStatut);
+        } else if (demandeStatut.getStatut().getId() == 2 && demandeStatut != null) {
+            DemandeStatut newDemandeStatut = new DemandeStatut();
+            newDemandeStatut.setDateStatut(LocalDateTime.now());
+            newDemandeStatut.setDemande(devisForm.getDemande());
+            newDemandeStatut.setStatut(this.statutService.findById(3));
             this.demandeStatutService.save(newDemandeStatut);
         }
 
@@ -126,12 +134,19 @@ public class DevisController {
             return "redirect:/devis/showForm?error=erreur_sauvegarde";
         }
 
-        return "redirect:/devis/showForm?success=enregistre";
+        return "redirect:/devis/list";
     }
 
     @GetMapping("/devis/list")
     public String findAll(Model model) {
         model.addAttribute("devis", this.devisService.findAll());
         return "devis/list";
+    }
+
+    @GetMapping("/devis/delete/{id}")
+    public String delete(@PathVariable("id") int id) {
+        Devis devis = this.devisService.findById(id);
+        this.devisService.delete(devis);
+        return "redirect:/devis/list";
     }
 }

@@ -27,6 +27,12 @@
                 <td th:text="${devis.demande?.reference} ?: 'Aucune demande'"></td>
 
                 <td th:text="${devis.typeDevis?.type} ?: 'Aucun type'"></td>
+
+                <td>
+                    <a th:href="@{/devis/edit/{id}(id=${devis.id})}">Edit</a>
+                    <a th:href="@{/devis/delete/{id}(id=${devis.id})}"
+                        onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
             </tr>
         </tbody>
     </table>

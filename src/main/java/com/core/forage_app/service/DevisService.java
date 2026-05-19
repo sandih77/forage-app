@@ -22,29 +22,25 @@ public class DevisService {
     @Autowired
     private DetailDevisRepository detailDevisRepository;
 
-    @Transactional // 👈 S'assure que TOUT passe ou TOUT casse en bloc
+    @Transactional 
     public void enregistrerDevisComplet(DevisForm form) {
         
-        // 1. Création et enregistrement de l'entité parente Devis
         Devis devis = new Devis();
         devis.setDemande(form.getDemande());
         devis.setTypeDevis(form.getTypeDevis());
         devis.setDateDevis(LocalDateTime.now());
         
-        // On sauvegarde le devis. Grâce à l'ID auto-généré, l'objet 'devis' aura son nouvel ID mis à jour.
         devis = devisRepository.save(devis);
 
-        // 2. Parcourir les lignes du formulaire pour créer les détails associés
         for (DevisForm.DetailDevisForm ligne : form.getLignes()) {
             if (ligne.getDesignation() != null && !ligne.getDesignation().trim().isEmpty()) {
                 DetailDevis detail = new DetailDevis();
-                detail.setDevis(devis); // 👈 Attribution de la clé étrangère du devis parent tout juste créé !
+                detail.setDevis(devis); 
                 detail.setDesignation(ligne.getDesignation());
                 detail.setDescription(ligne.getDescription());
                 detail.setQuantity(ligne.getQuantite());
                 detail.setPrixUnitaire(ligne.getPrixUnitaire());
                 
-                // Sauvegarde de la ligne de détail
                 detailDevisRepository.save(detail);
             }
         }
@@ -52,5 +48,13 @@ public class DevisService {
 
     public List<Devis> findAll() {
         return this.devisRepository.findAll();
+    }
+
+    public Devis findById(int id) {
+        return this.devisRepository.findById(id).orElse(null);
+    }
+
+    public void delete(Devis devis) {
+        this.devisRepository.delete(devis);
     }
 }

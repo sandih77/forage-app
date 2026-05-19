@@ -3,6 +3,7 @@ package com.core.forage_app.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,7 +38,7 @@ public class Devis {
         this.typeDevis = typeDevis;
     }
 
-    @OneToMany(mappedBy = "devis")
+    @OneToMany(mappedBy = "devis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DetailDevis> listDetailDevis;
 
     public int getId() {

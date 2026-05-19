@@ -1,6 +1,7 @@
 package com.core.forage_app.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -39,7 +40,7 @@ public class Devis {
     }
 
     @OneToMany(mappedBy = "devis", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<DetailDevis> listDetailDevis;
+    private List<DetailDevis> listDetailDevis = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -63,5 +64,13 @@ public class Devis {
 
     public void setDateDevis(LocalDateTime dateDevis) {
         this.dateDevis = dateDevis;
+    }
+
+    public List<DetailDevis> getListDetailDevis() {
+        return listDetailDevis;
+    }
+
+    public void setListDetailDevis(List<DetailDevis> listDetailDevis) {
+        this.listDetailDevis = listDetailDevis;
     }
 }

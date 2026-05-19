@@ -143,10 +143,57 @@ public class DevisController {
         return "devis/list";
     }
 
+    @GetMapping("/devis/edit/{id}")
+    public String editForm(@PathVariable("id") int id, Model model) {
+        Devis devis = this.devisService.findById(id);
+        if (devis == null) {
+            return "redirect:/devis/list";
+        }
+        model.addAttribute("devis", devis);
+        return "devis/form";
+    }
+
+    @PostMapping("/devis/update/{id}")
+    public String updateDevis(@PathVariable("id") int id, @ModelAttribute DevisForm devisForm) {
+        Devis devis = this.devisService.findById(id);
+        if (devis == null) {
+            return "redirect:/devis/list";
+        }
+
+        try {
+            this.devisService.mettreAJourDevisComplet(devis, devisForm);
+        } catch (Exception e) {
+            return "redirect:/devis/edit/" + id + "?error=" + e.getClass().getSimpleName();
+        }
+
+        return "redirect:/devis/list";
+    }
+
     @GetMapping("/devis/delete/{id}")
     public String delete(@PathVariable("id") int id) {
         Devis devis = this.devisService.findById(id);
         this.devisService.delete(devis);
         return "redirect:/devis/list";
+    }
+
+    @GetMapping("/devis/details/{id}")
+    @ResponseBody
+    public List<Map<String, Object>> getDevisDetails(@PathVariable("id") int id) {
+        Devis devis = this.devisService.findByIdWithDetails(id);
+        List<Map<String, Object>> detailsList = new ArrayList<>();
+        
+        if (devis != null && devis.getListDetailDevis() != null) {
+            for (com.core.forage_app.entity.DetailDevis detail : devis.getListDetailDevis()) {
+                Map<String, Object> detailMap = new HashMap<>();
+                detailMap.put("id", detail.getId());
+                detailMap.put("designation", detail.getDesignation());
+                detailMap.put("description", detail.getDescription());
+                detailMap.put("quantity", detail.getQuantity());
+                detailMap.put("prixUnitaire", detail.getPrixUnitaire());
+                detailsList.add(detailMap);
+            }
+        }
+        
+        return detailsList;
     }
 }

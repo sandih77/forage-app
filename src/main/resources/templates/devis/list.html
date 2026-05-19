@@ -1,41 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List - Devis</title>
+    <title>Liste des Devis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .btn-create {
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .btn-group-sm {
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            text-decoration: none;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #e7f3ff;
+            color: #004085;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container">
+        <h1>
+            <i class="bi bi-file-text"></i> Liste des Devis
+        </h1>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Demande</th>
-                <th>Type de devis</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="devis : ${devis}">
-                <td th:text="${devis.id}"></td>
+        <a th:href="@{/devis/showForm}" class="btn btn-primary btn-create">
+            <i class="bi bi-plus-circle"></i> Créer un nouveau devis
+        </a>
 
-                <td th:text="${devis.dateDevis}"></td>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 20%;">Date</th>
+                        <th style="width: 25%;">Référence Demande</th>
+                        <th style="width: 20%;">Type de devis</th>
+                        <th style="width: 25%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${devis.isEmpty()}">
+                        <td colspan="5" class="text-center text-muted">
+                            Aucun devis trouvé
+                        </td>
+                    </tr>
+                    <tr th:each="d : ${devis}">
+                        <td>
+                            <span class="badge bg-secondary" th:text="${d.id}"></span>
+                        </td>
 
-                <td th:text="${devis.demande?.reference} ?: 'Aucune demande'"></td>
+                        <td th:text="${#temporals.format(d.dateDevis, 'dd/MM/yyyy HH:mm')}"></td>
 
-                <td th:text="${devis.typeDevis?.type} ?: 'Aucun type'"></td>
+                        <td>
+                            <span class="badge-info" th:text="${d.demande?.reference} ?: 'Aucune demande'"></span>
+                        </td>
 
-                <td>
-                    <a th:href="@{/devis/edit/{id}(id=${devis.id})}">Edit</a>
-                    <a th:href="@{/devis/delete/{id}(id=${devis.id})}"
-                        onclick="return confirm('Are you sure?')">Delete</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                        <td th:text="${d.typeDevis?.type} ?: 'Aucun type'"></td>
+
+                        <td>
+                            <div class="btn-group-sm">
+                                <a th:href="@{/devis/edit/{id}(id=${d.id})}" class="btn-edit">
+                                    <i class="bi bi-pencil"></i> Éditer
+                                </a>
+                                <a th:href="@{/devis/delete/{id}(id=${d.id})}" 
+                                   class="btn-delete"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce devis ?')">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

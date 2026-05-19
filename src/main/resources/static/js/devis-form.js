@@ -8,74 +8,137 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnAddLigne = document.getElementById("btnAddLigne");
     const template = document.getElementById("ligneDevisTemplate");
     const submitBlock = document.getElementById("submitBlock");
+    const mainForm = document.getElementById("mainDevisForm");
 
     let compteurLigne = 0;
+    const isEditMode = mainForm.action.includes("/devis/update/");
+
+    if (isEditMode) {
+        chargerDetailsExistants();
+    }
+
+    function chargerDetailsExistants() {
+        const devisId = mainForm.action.match(/\/devis\/update\/(\d+)/)[1];
+        
+        fetch(`/forage-app/devis/details/${devisId}`)
+            .then(response => response.json())
+            .then(details => {
+                details.forEach(detail => {
+                    ajouterLigneEdition(detail);
+                });
+                gererVisibiliteBoutonEnregistrer();
+            })
+            .catch(error => console.error("Erreur lors du chargement des détails :", error));
+    }
+
+    function ajouterLigneEdition(detail) {
+        const clone = template.content.cloneNode(true);
+        const divLigne = clone.querySelector(".ligne-devis");
+        divLigne.id = "ligne_" + compteurLigne;
+
+        const inputDesignation = clone.querySelector(".designation");
+        const inputDescription = clone.querySelector(".description");
+        const inputQty = clone.querySelector(".quantite");
+        const inputPu = clone.querySelector(".prixUnitaire");
+        const inputTotal = clone.querySelector(".total");
+
+        inputDesignation.value = detail.designation;
+        inputDescription.value = detail.description;
+        inputQty.value = detail.quantity;
+        inputPu.value = detail.prixUnitaire.toFixed(2);
+        inputTotal.value = (detail.quantity * detail.prixUnitaire).toFixed(2);
+
+        // Assigner les noms des inputs pour le binding du formulaire
+        inputDesignation.name = `lignes[${compteurLigne}].designation`;
+        inputDescription.name = `lignes[${compteurLigne}].description`;
+        inputQty.name = `lignes[${compteurLigne}].quantite`;
+        inputPu.name = `lignes[${compteurLigne}].prixUnitaire`;
+        inputTotal.name = `lignes[${compteurLigne}].montant`;
+
+        function calculerMontant() {
+            const qte = parseFloat(inputQty.value) || 0;
+            const pu = parseFloat(inputPu.value) || 0;
+            inputTotal.value = (qte * pu).toFixed(2);
+        }
+        
+        inputQty.addEventListener("input", calculerMontant);
+        inputPu.addEventListener("input", calculerMontant);
+
+        clone.querySelector(".btn-remove").addEventListener("click", function () {
+            divLigne.remove();
+            gererVisibiliteBoutonEnregistrer();
+        });
+
+        lignesContainer.appendChild(clone);
+        compteurLigne++;
+    }
 
     function gererVisibiliteBoutonEnregistrer() {
         const nbLignes = lignesContainer.querySelectorAll(".ligne-devis").length;
 
         if (nbLignes > 0) {
-            submitBlock.classList.remove("hidden");
+            if (submitBlock) submitBlock.classList.remove("hidden");
         } else {
-            submitBlock.classList.add("hidden");
+            if (submitBlock) submitBlock.classList.add("hidden");
         }
     }
 
-    referenceInput.addEventListener("input", function () {
-        const refValue = referenceInput.value.trim();
+    if (referenceInput) {
+        referenceInput.addEventListener("input", function () {
+            const refValue = referenceInput.value.trim();
 
-        if (refValue.length < 3) {
-            masquerTout();
-            return;
-        }
+            if (refValue.length < 3) {
+                masquerTout();
+                return;
+            }
 
-        const url = referenceInput.getAttribute("data-url");
+            const url = referenceInput.getAttribute("data-url");
 
-        fetch(`${url}?reference=${encodeURIComponent(refValue)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Erreur serveur HTTP " + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.found) {
-                    document.getElementById("demandeIdInput").value = data.id;
-                    document.getElementById("txtLieu").innerText = "Lieu : " + data.lieu;
-                    document.getElementById("txtReference").innerText = "Réf : " + data.reference;
-                    document.getElementById("txtClient").innerText = "Client : " + data.clientNom;
-                    document.getElementById("txtCommune").innerText = "Commune : " + data.communeNom;
-                    demandeBlock.classList.remove("hidden");
-                    addBlock.classList.remove("hidden");
-
-                    if (data.hasTypeDevis) {
-                        typeDevisSelect.innerHTML = "";
-                        data.typeDevis.forEach(td => {
-                            const option = document.createElement("option");
-
-                            option.value = td.id;
-                            option.textContent = td.nom;
-
-                            typeDevisSelect.appendChild(option);
-                        });
-
-                        typeBlock.classList.remove("hidden");
+            fetch(`${url}?reference=${encodeURIComponent(refValue)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erreur serveur HTTP " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.found) {
+                        document.getElementById("demandeIdInput").value = data.id;
+                        document.getElementById("txtLieu").innerText = "Lieu : " + data.lieu;
+                        document.getElementById("txtReference").innerText = "Réf : " + data.reference;
+                        document.getElementById("txtClient").innerText = "Client : " + data.clientNom;
+                        document.getElementById("txtCommune").innerText = "Commune : " + data.communeNom;
+                        demandeBlock.classList.remove("hidden");
                         addBlock.classList.remove("hidden");
 
-                    } else {
-                        typeBlock.classList.add("hidden");
-                        addBlock.classList.add("hidden");
-                    }
-                } else {
-                    masquerTout();
-                }
-            })
-            .catch(error => {
-                console.error("Erreur lors du Fetch AJAX :", error);
-            });
-    });
+                        if (data.hasTypeDevis) {
+                            typeDevisSelect.innerHTML = "";
+                            data.typeDevis.forEach(td => {
+                                const option = document.createElement("option");
 
-    // Action au clic sur ADD
+                                option.value = td.id;
+                                option.textContent = td.nom;
+
+                                typeDevisSelect.appendChild(option);
+                            });
+
+                            typeBlock.classList.remove("hidden");
+                            addBlock.classList.remove("hidden");
+
+                        } else {
+                            typeBlock.classList.add("hidden");
+                            addBlock.classList.add("hidden");
+                        }
+                    } else {
+                        masquerTout();
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur lors du Fetch AJAX :", error);
+                });
+        });
+    }
+
     btnAddLigne.addEventListener("click", function () {
         const clone = template.content.cloneNode(true);
         const divLigne = clone.querySelector(".ligne-devis");
@@ -115,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
         demandeBlock.classList.add("hidden");
         typeBlock.classList.add("hidden");
         addBlock.classList.add("hidden");
-        submitBlock.classList.add("hidden");
+        if (submitBlock) submitBlock.classList.add("hidden");
         lignesContainer.innerHTML = "";
         compteurLigne = 0;
     }

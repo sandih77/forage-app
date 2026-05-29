@@ -23,17 +23,19 @@ public class DemandeStatut {
     @JoinColumn(name = "id_statut")
     private Statut statut;
 
-    public Statut getStatut() {
-        return statut;
-    }
-
-    public void setStatut(Statut statut) {
-        this.statut = statut;
-    }
-
     @ManyToOne
     @JoinColumn(name = "id_demande")
     private Demande demande;
+
+    private float dureeTravail;
+
+    public float getDureeTravail() {
+        return dureeTravail;
+    }
+
+    public void setDureeTravail(float dureeTravail) {
+        this.dureeTravail = dureeTravail;
+    }
 
     public Demande getDemande() {
         return demande;
@@ -57,5 +59,13 @@ public class DemandeStatut {
 
     public void setDateStatut(LocalDateTime dateStatut) {
         this.dateStatut = dateStatut;
+    }
+
+    public Statut getStatut() {
+        return statut;
+    }
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
     }
 }

@@ -1,5 +1,8 @@
 package com.core.forage_app.service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +24,10 @@ public class DemandeStatutService {
 
     public void save(DemandeStatut demandeStatut) {
         this.demandeStatutRepository.save(demandeStatut);
+    }
+
+    public float calculateDT(LocalDateTime start, LocalDateTime end) {
+        long seconds = Duration.between(start, end).getSeconds();
+        return seconds / 60.0f; 
     }
 }

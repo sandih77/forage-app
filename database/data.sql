@@ -1,23 +1,50 @@
-INSERT INTO client (nom, contact, adresse) VALUES ('John Doe', '123456789', '123 Main St');
-INSERT INTO client (nom, contact, adresse) VALUES ('Alice', '123456789', '234 Main St');
+INSERT INTO
+    client (nom, contact, adresse)
+VALUES
+    ('John Doe', '123456789', '123 Main St');
 
-INSERT INTO region (nom) VALUES ('Region A');
+INSERT INTO
+    client (nom, contact, adresse)
+VALUES
+    ('Alice', '123456789', '234 Main St');
 
-INSERT INTO district (nom, id_region) VALUES ('District A', 1);
+INSERT INTO
+    region (nom)
+VALUES
+    ('Region A');
 
-INSERT INTO commune (nom, id_district) VALUES ('Commune A', 1);
+INSERT INTO
+    district (nom, id_region)
+VALUES
+    ('District A', 1);
 
-INSERT INTO statut(libelle) VALUES
-('Demande creee'),
-('Demande etude creee'),
-('Demande etude refusee'),
-('Demande etude acceptee'),
-('Demande forage creee'),
-('Demande forage refusee'),
-('Demande forage acceptee'),
-('Travail commence'),
-('Travail termine');
+INSERT INTO
+    commune (nom, id_district)
+VALUES
+    ('Commune A', 1);
 
-INSERT INTO type_devis(type) VALUES
-('Etude'),
-('Forage');
+INSERT INTO
+    statut(libelle)
+VALUES
+    ('Demande creee'),
+    ('Demande etude creee'),
+    ('Demande etude refusee'),
+    ('Demande etude acceptee'),
+    ('Demande forage creee'),
+    ('Demande forage refusee'),
+    ('Demande forage acceptee'),
+    ('Travail commence'),
+    ('Travail termine');
+
+INSERT INTO
+    type_devis(type)
+VALUES
+    ('Etude'),
+    ('Forage');
+
+INSERT INTO
+    Alerte (couleur, id_statut1, id_statut2, dureetravail)
+VALUES
+    ('rouge', 1, 2, 70),
+    ('orange', 2, 4, 60),
+    ('vert', 4, 5, 50);

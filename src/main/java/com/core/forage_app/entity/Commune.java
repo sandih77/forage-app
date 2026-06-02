@@ -67,7 +67,7 @@ public class Commune {
         if (o == null || getClass() != o.getClass())
             return false;
         Commune commune = (Commune) o;
-        return id == commune.id; // On compare uniquement sur l'ID technique
+        return id == commune.id; 
     }
 
     @Override

@@ -70,7 +70,7 @@ public class Client {
         if (o == null || getClass() != o.getClass())
             return false;
         Client client = (Client) o;
-        return id == client.id; // On compare uniquement sur l'ID technique
+        return id == client.id; 
     }
 
     @Override

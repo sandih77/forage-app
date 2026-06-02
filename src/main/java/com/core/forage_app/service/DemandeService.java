@@ -43,17 +43,6 @@ public class DemandeService {
         return this.demandeRepository.findById(id).orElse(null);
     }
 
-    // public Demande findByReference(String reference) {
-    //     List<Demande> demandes = this.demandeRepository.findAll();
-    //     Demande toFind = new Demande();
-    //     for (Demande d : demandes) {
-    //         if (d.getReference().toLowerCase().contains(reference.toLowerCase())) {
-    //             toFind = d;
-    //         }
-    //     }
-    //     return toFind; 
-    // }
-
     public Demande findByReference(String reference) {
         return this.demandeRepository.findByReference(reference) != null ? this.demandeRepository.findByReference(reference) : new Demande();
     }

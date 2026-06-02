@@ -29,12 +29,22 @@ public class DemandeStatut {
 
     private float dureeTravail;
 
+    private String observation;
+
     public float getDureeTravail() {
         return dureeTravail;
     }
 
     public void setDureeTravail(float dureeTravail) {
         this.dureeTravail = dureeTravail;
+    }
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
     }
 
     public Demande getDemande() {

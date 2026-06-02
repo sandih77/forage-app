@@ -35,6 +35,8 @@
             <set>
                 <bean class="com.core.forage_app.converter.ClientConverter" />
                 <bean class="com.core.forage_app.converter.CommuneConverter" />
+                <bean class="com.core.forage_app.converter.DemandeConverter" />
+                <bean class="com.core.forage_app.converter.StatutConverter" />
             </set>
         </property>
     </bean>

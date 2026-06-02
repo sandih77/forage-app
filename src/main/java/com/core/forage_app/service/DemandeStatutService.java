@@ -36,7 +36,7 @@ public class DemandeStatutService {
         }
 
         LocalTime workStart = LocalTime.of(8, 0);
-        LocalTime workEnd = LocalTime.of(17, 0);
+        LocalTime workEnd = LocalTime.of(16, 0);
 
         long totalMinutes = 0;
 

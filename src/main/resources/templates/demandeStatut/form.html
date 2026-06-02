@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form th:action="@{/demandeStatut/save}" th:object="${demandeStatut}" method="post">
+
+        <label for="referenceInput">Référence demande :</label>
+        <input type="text" id="referenceInput" th:data-url="@{/demandeStatut/findDemande}"
+            placeholder="Ex: DEMANDE01" autocomplete="off" />
+
+        <div>
+            <label>Demande :</label>
+            <input type="text" id="demandeLibelle" readonly>
+
+            <input type="hidden" th:field="*{demande}" id="demandeId">
+        </div>
+
+        <div>
+            <label for="statut">Statut :</label>
+            <select th:field="*{statut}" id="statut">
+                <option value="">-- Choisir --</option>
+                <option th:each="s : ${statuts}" th:value="${s.id}" th:text="${s.libelle}">
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="dureeTravail">Durée de travail :</label>
+            <input type="number" step="0.5" th:field="*{dureeTravail}" id="dureeTravail">
+        </div>
+
+        <div>
+            <label for="observation">Observation :</label>
+            <textarea th:field="*{observation}" id="observation"></textarea>
+        </div>
+
+        <div>
+            <label for="date">Date :</label>
+            <input type="datetime-local" th:field="*{dateStatut}" id="date">
+        </div>
+
+        <button type="submit">Enregistrer</button>
+
+    </form>
+    <script th:src="@{/static/js/demandeStatut-form.js}"></script>
+</body>
+
+</html>

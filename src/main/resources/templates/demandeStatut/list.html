@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande Statut - List</title>
+</head>
+
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Durée de travail</th>
+                <th>Observation</th>
+                <th>Demande (ref)</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="d : ${demandeStatuts}">
+                <td th:text="${d.id}"></td>
+
+                <td th:text="${d.dateStatut}"></td>
+
+                <td th:text="${d.dureeTravail}"></td>
+
+                <td th:text="${d.observation}"></td>
+                <td th:text="${d.demande.reference}"></td>
+                <td th:text="${d.statut.libelle}"></td>
+                <td>
+                    <a th:href="@{/demandeStatut/edit/{id}(id=${d.id})}">Edit</a>
+                    <a th:href="@{/demandeStatut/delete/{id}(id=${d.id})}"
+                        onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

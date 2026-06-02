@@ -63,12 +63,20 @@ public class DemandeStatutController {
     public String save(@ModelAttribute DemandeStatut demandeStatut) {
         DemandeStatut lastDTS = this.demandeStatutService.findTopByDemandeIdOrderByIdDesc(demandeStatut.getDemande().getId());
         if (lastDTS != null) {
-
             float dt = this.demandeStatutService.calculateDT(lastDTS.getDateStatut(), demandeStatut.getDateStatut());
             demandeStatut.setDureeTravail(dt);
             this.demandeStatutService.save(demandeStatut);
-            return "demande/list";
+            return "redirect:/demandeStatut/list";
+        } else {
+            demandeStatut.setDureeTravail(0.0f);
+            this.demandeStatutService.save(demandeStatut);
         }
-        return "demande/list";
+        return "redirect:/demandeStatut/list";
+    }
+
+    @GetMapping("demandeStatut/list")
+    public String list(Model model){
+        model.addAttribute("demandeStatuts", this.demandeStatutService.findAll());
+        return "demandeStatut/list";
     }
 }

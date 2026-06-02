@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,9 @@ public class DemandeStatutService {
         }
 
         return (float) totalMinutes;
+    }
+
+    public List<DemandeStatut> findAll() {
+        return this.demandeStatutRepository.findAll();
     }
 }

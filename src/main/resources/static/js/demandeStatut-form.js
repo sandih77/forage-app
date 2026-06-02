@@ -20,11 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-
                 document.getElementById("demandeId").value = data.id;
 
-                document.getElementById("demandeLibelle").value =
-                    data.reference;
+                document.getElementById("demandeLibelle").value = data.reference;
 
             })
             .catch(error => {

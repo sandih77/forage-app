@@ -2,6 +2,8 @@ package com.core.forage_app.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +18,8 @@ public class DemandeStatut {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime dateStatut;
 
     @ManyToOne

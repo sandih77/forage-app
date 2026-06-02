@@ -44,6 +44,6 @@ public class DemandeService {
     }
 
     public Demande findByReference(String reference) {
-        return this.demandeRepository.findByReference(reference) != null ? this.demandeRepository.findByReference(reference) : new Demande();
+        return this.demandeRepository.findTopByReferenceOrderByIdDesc(reference);
     }
 }

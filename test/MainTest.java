@@ -2,8 +2,8 @@ import java.time.*;
 
 public class MainTest {
     public static void main(String[] args) {
-        LocalDateTime start = LocalDateTime.of(2026, 5, 28, 8, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 6, 1, 8, 0);
+        LocalDateTime start = LocalDateTime.of(2026, 6, 2, 9, 8);
+        LocalDateTime end = LocalDateTime.of(2026, 6, 3, 9, 32);
         float dureeTravail = 0;
         try {
             dureeTravail = calculateDT(start, end);
@@ -20,7 +20,7 @@ public class MainTest {
         }
 
         LocalTime workStart = LocalTime.of(8, 0);
-        LocalTime workEnd = LocalTime.of(17, 0);
+        LocalTime workEnd = LocalTime.of(16, 0);
 
         long totalMinutes = 0;
 

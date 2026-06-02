@@ -37,6 +37,7 @@
                 <bean class="com.core.forage_app.converter.CommuneConverter" />
                 <bean class="com.core.forage_app.converter.DemandeConverter" />
                 <bean class="com.core.forage_app.converter.StatutConverter" />
+                <bean class="com.core.forage_app.converter.StringToLocalDateTimeConverter"/>
             </set>
         </property>
     </bean>

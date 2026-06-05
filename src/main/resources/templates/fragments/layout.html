@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<!-- ══════════════════════════════════════════
+     NAVBAR FRAGMENT
+     Usage: <nav th:replace="~{fragments/layout :: navbar('demande')}">
+     activeSection: 'demande' | 'demandeStatut' | 'devis'
+     ═════════════════════════════════════════ -->
+<nav th:fragment="navbar(activeSection)" class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+
+    <!-- Brand -->
+    <a class="navbar-brand" th:href="@{/}">
+      <span class="brand-dot"></span>
+      GestioPro
+    </a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+      aria-controls="navMain" aria-expanded="false" aria-label="Menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links -->
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+
+        <!-- Demandes -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" th:classappend="${activeSection == 'demande'} ? 'active' : ''" href="#"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-inbox"></i> Demandes
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" th:href="@{/demande/list}">
+                <i class="bi bi-list-ul"></i> Liste des demandes
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" th:href="@{/demande/showForm}">
+                <i class="bi bi-plus-circle"></i> Nouvelle demande
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Statuts -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" th:classappend="${activeSection == 'demandeStatut'} ? 'active' : ''"
+            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-activity"></i> Statuts
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" th:href="@{/demandeStatut/list}">
+                <i class="bi bi-list-ul"></i> Liste des statuts
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" th:href="@{/demandeStatut/showForm}">
+                <i class="bi bi-plus-circle"></i> Nouveau statut
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Devis -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" th:classappend="${activeSection == 'devis'} ? 'active' : ''" href="#"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-file-text"></i> Devis
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" th:href="@{/devis/list}">
+                <i class="bi bi-list-ul"></i> Liste des devis
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" th:href="@{/devis/showForm}">
+                <i class="bi bi-plus-circle"></i> Nouveau devis
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     FOOTER FRAGMENT
+     Usage: <footer th:replace="~{fragments/layout :: footer}">
+     ═════════════════════════════════════════ -->
+<footer th:fragment="footer" class="site-footer">
+  <span class="footer-brand">GestioPro</span>
+  <span>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> — Tous droits réservés</span>
+  <div class="footer-links">
+    <a th:href="@{/demande/list}">Demandes</a>
+    <a th:href="@{/demandeStatut/list}">Statuts</a>
+    <a th:href="@{/devis/list}">Devis</a>
+  </div>
+</footer>
+
+</html>

@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const referenceInput = document.getElementById("referenceInput");
+    const demandeIdInput = document.getElementById("demandeId");
+    const demandeLibelleInput = document.getElementById("demandeLibelle");
+
+    if (!referenceInput || !demandeIdInput || !demandeLibelleInput) {
+        return;
+    }
 
     referenceInput.addEventListener("input", function () {
 
@@ -20,16 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-                document.getElementById("demandeId").value = data.id;
-
-                document.getElementById("demandeLibelle").value = data.reference;
+                demandeIdInput.value = data.id;
+                demandeLibelleInput.value = data.reference;
 
             })
             .catch(error => {
                 console.error(error);
 
-                document.getElementById("demandeId").value = "";
-                document.getElementById("demandeLibelle").value = "";
+                demandeIdInput.value = "";
+                demandeLibelleInput.value = "";
             });
 
     });

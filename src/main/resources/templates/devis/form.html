@@ -2,239 +2,312 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devis - Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${devis == null} ? 'Nouveau devis — GestioPro' : 'Éditer le devis — GestioPro'">Devis — GestioPro
+  </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/static/css/app.css}">
+  <style>
+    .autocomplete-wrapper {
+      position: relative;
+    }
 
-        .container-form {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    .add-ligne-btn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .85rem 1.5rem;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text-2);
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: .875rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: .5rem;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .add-ligne-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
 
-        .ligne-devis {
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
+    /* Ligne devis rows */
+    .lignes-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
 
-        .ligne-devis input {
-            flex: 1;
-            min-width: 150px;
-        }
+    .ligne-devis {
+      display: grid;
+      grid-template-columns: 2fr 2fr 80px 130px 130px 40px;
+      gap: .6rem;
+      align-items: end;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      transition: border-color var(--transition);
+    }
 
-        .ligne-devis input.total {
-            background-color: #e9ecef;
-        }
+    .ligne-devis:hover {
+      border-color: var(--accent-dim);
+    }
 
-        .btn-remove {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .ligne-devis .form-label {
+      display: block;
+      margin-bottom: .3rem;
+    }
 
-        .btn-remove:hover {
-            background-color: #c82333;
-        }
+    .btn-remove-ligne {
+      background: transparent;
+      border: 1.5px solid var(--danger);
+      color: var(--danger);
+      border-radius: var(--radius);
+      padding: .55rem .6rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      line-height: 1;
+    }
 
-        .btn-add {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-        }
+    .btn-remove-ligne:hover {
+      background: var(--danger);
+      color: #fff;
+    }
 
-        .btn-add:hover {
-            background-color: #218838;
-        }
-
-        .demande-block {
-            background-color: #e7f3ff;
-            border-left: 4px solid #007bff;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 4px;
-        }
-
-        .demande-block p {
-            margin: 5px 0;
-            font-weight: 500;
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .form-section label {
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .btn-submit {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        .btn-submit:hover {
-            background-color: #0056b3;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
-    </style>
+    @media (max-width: 768px) {
+      .ligne-devis {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container-form">
-        <h2 th:if="${devis == null}">
-            <i class="bi bi-file-text"></i> Créer un nouveau devis
-        </h2>
-        <h2 th:if="${devis != null}">
-            <i class="bi bi-pencil-square"></i> Éditer le devis #<span th:text="${devis.id}"></span>
-        </h2>
 
-        <div th:if="${devis == null}">
-            <div class="form-section">
-                <label for="referenceInput">Rechercher une demande (Référence)</label>
-                <input type="text" id="referenceInput" class="form-control" 
-                       th:data-url="@{/devis/findDemande}" placeholder="Ex: DEMANDE01" 
-                       autocomplete="off" />
+  <!-- Navbar -->
+  <nav th:replace="~{fragments/layout :: navbar('devis')}"></nav>
+
+  <main class="page-wrapper">
+    <div class="page-container" style="max-width: 960px;">
+
+      <!-- Page header -->
+      <div class="page-header fade-up">
+        <div class="page-header-left">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/devis/list}">Devis</a></li>
+              <li class="breadcrumb-item active" th:text="${devis == null} ? 'Nouveau' : 'Éditer #' + ${devis.id}">
+                Formulaire</li>
+            </ol>
+          </nav>
+          <h1 class="page-title" th:text="${devis == null} ? 'Créer un devis' : 'Éditer le devis #' + ${devis.id}">
+            Devis
+          </h1>
+          <p class="page-subtitle"
+            th:text="${devis == null} ? 'Sélectionnez une demande puis composez les lignes du devis' : 'Modifiez les lignes de détail du devis'">
+          </p>
+        </div>
+      </div>
+
+      <div th:if="${devis == null}">
+
+        <div class="card fade-up fade-up-1 mb-4">
+          <div class="card-header">
+            <span class="card-header-title">
+              <i class="bi bi-search"></i> Étape 1 — Rechercher une demande
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="autocomplete-wrapper">
+              <label for="referenceInput" class="form-label">Référence de la demande</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" id="referenceInput" class="form-control" th:data-url="@{/devis/findDemande}"
+                  placeholder="Ex: DEMANDE01" autocomplete="off" />
+              </div>
+              <div id="autocompleteList" class="autocomplete-list" style="display:none;"></div>
             </div>
-
-            <div id="demandeBlock" class="demande-block hidden">
-                <p id="txtLieu"></p>
-                <p id="txtReference"></p>
-                <p id="txtClient"></p>
-                <p id="txtCommune"></p>
-            </div>
-
-            <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
-                <input type="hidden" id="demandeIdInput" name="demande.id" />
-
-                <div id="typeBlock" class="form-section hidden">
-                    <label for="typeDevis">Type de devis</label>
-                    <select id="typeDevis" name="typeDevis.id" class="form-control">
-                    </select>
-                </div>
-
-                <div class="form-section">
-                    <label>Lignes de détail</label>
-                    <div id="lignesContainer"></div>
-                </div>
-
-                <div id="addBlock" class="hidden">
-                    <button type="button" id="btnAddLigne" class="btn-add">
-                        <i class="bi bi-plus-circle"></i> Ajouter une ligne
-                    </button>
-                </div>
-
-                <div id="submitBlock" class="hidden action-buttons">
-                    <button type="submit" class="btn-submit">
-                        <i class="bi bi-check-circle"></i> Enregistrer le devis
-                    </button>
-                    <a th:href="@{/}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Annuler
-                    </a>
-                </div>
-            </form>
+          </div>
         </div>
 
-        <div th:if="${devis != null}">
-            <div class="demande-block">
-                <p><strong>Référence :</strong> <span th:text="${devis.demande?.reference}"></span></p>
-                <p><strong>Client :</strong> <span th:text="${devis.demande?.client?.nom}"></span></p>
-                <p><strong>Commune :</strong> <span th:text="${devis.demande?.commune?.nom}"></span></p>
-                <p><strong>Lieu :</strong> <span th:text="${devis.demande?.lieu}"></span></p>
-                <p><strong>Type de devis :</strong> <span th:text="${devis.typeDevis?.type}"></span></p>
+        <!-- Step 2 – demande info (hidden until found) -->
+        <div id="demandeBlock" class="info-block fade-up hidden">
+          <div class="info-block-grid">
+            <div class="info-item">
+              <label>Référence</label>
+              <span id="txtReference">—</span>
+            </div>
+            <div class="info-item">
+              <label>Client</label>
+              <span id="txtClient">—</span>
+            </div>
+            <div class="info-item">
+              <label>Commune</label>
+              <span id="txtCommune">—</span>
+            </div>
+            <div class="info-item">
+              <label>Lieu</label>
+              <span id="txtLieu">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 – form -->
+        <form th:action="@{/devis/save}" method="post" id="mainDevisForm">
+          <input type="hidden" id="demandeIdInput" name="demande.id" />
+
+          <div id="formContent" class="hidden">
+
+            <div class="card fade-up fade-up-2 mb-4">
+              <div class="card-header">
+                <span class="card-header-title">
+                  <i class="bi bi-tag"></i> Étape 2 — Type de devis
+                </span>
+              </div>
+              <div class="card-body">
+                <div style="max-width: 360px;">
+                  <label for="typeDevis" class="form-label">Type de devis</label>
+                  <select id="typeDevis" name="typeDevis.id" class="form-select">
+                    <!-- Populated by JS after demande selection -->
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <form th:action="@{/devis/update/{id}(id=${devis.id})}" method="post" id="mainDevisForm">
-                <input type="hidden" id="demandeIdInput" name="demande.id" th:value="${devis.demande.id}" />
-                <input type="hidden" name="typeDevis.id" th:value="${devis.typeDevis.id}" />
-
-                <div class="form-section">
-                    <label>Lignes de détail</label>
-                    <div id="lignesContainer"></div>
+            <div class="card fade-up fade-up-3">
+              <div class="card-header">
+                <span class="card-header-title">
+                  <i class="bi bi-list-columns"></i> Étape 3 — Lignes de détail
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="lignes-wrapper" id="lignesContainer"></div>
+                <button type="button" id="btnAddLigne" class="add-ligne-btn">
+                  <i class="bi bi-plus-circle"></i> Ajouter une ligne
+                </button>
+              </div>
+              <div class="card-header"
+                style="border-top: 1px solid var(--border); border-bottom: none; justify-content: flex-end;">
+                <div class="d-flex gap-3">
+                  <a th:href="@{/devis/list}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Annuler
+                  </a>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Enregistrer le devis
+                  </button>
                 </div>
+              </div>
+            </div>
 
-                <div id="addBlock">
-                    <button type="button" id="btnAddLigne" class="btn-add">
-                        <i class="bi bi-plus-circle"></i> Ajouter une ligne
-                    </button>
-                </div>
+          </div><!-- /formContent -->
+        </form>
 
-                <div class="action-buttons">
-                    <button type="submit" class="btn-submit">
-                        <i class="bi bi-check-circle"></i> Mettre à jour
-                    </button>
-                    <a th:href="@{/devis/list}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Annuler
-                    </a>
-                </div>
-            </form>
+      </div><!-- /devis == null -->
+
+      <div th:if="${devis != null}">
+
+        <div class="info-block fade-up fade-up-1 mb-4">
+          <div class="info-block-grid">
+            <div class="info-item">
+              <label>Référence</label>
+              <span th:text="${devis.demande?.reference}">—</span>
+            </div>
+            <div class="info-item">
+              <label>Client</label>
+              <span th:text="${devis.demande?.client?.nom}">—</span>
+            </div>
+            <div class="info-item">
+              <label>Commune</label>
+              <span th:text="${devis.demande?.commune?.nom}">—</span>
+            </div>
+            <div class="info-item">
+              <label>Lieu</label>
+              <span th:text="${devis.demande?.lieu}">—</span>
+            </div>
+            <div class="info-item">
+              <label>Type de devis</label>
+              <span th:text="${devis.typeDevis?.type}">—</span>
+            </div>
+          </div>
         </div>
+
+        <form th:action="@{/devis/update/{id}(id=${devis.id})}" method="post" id="mainDevisForm">
+          <input type="hidden" name="demande.id" th:value="${devis.demande.id}" />
+          <input type="hidden" name="typeDevis.id" th:value="${devis.typeDevis.id}" />
+
+          <div class="card fade-up fade-up-2">
+            <div class="card-header">
+              <span class="card-header-title">
+                <i class="bi bi-list-columns"></i> Lignes de détail
+              </span>
+            </div>
+            <div class="card-body">
+              <div class="lignes-wrapper" id="lignesContainer"></div>
+              <button type="button" id="btnAddLigne" class="add-ligne-btn">
+                <i class="bi bi-plus-circle"></i> Ajouter une ligne
+              </button>
+            </div>
+            <div class="card-header"
+              style="border-top: 1px solid var(--border); border-bottom: none; justify-content: flex-end;">
+              <div class="d-flex gap-3">
+                <a th:href="@{/devis/list}" class="btn btn-secondary">
+                  <i class="bi bi-x-circle"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-check-circle"></i> Mettre à jour
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
     </div>
+  </main>
 
-    <template id="ligneDevisTemplate">
-        <div class="ligne-devis">
-            <input type="text" class="designation form-control" placeholder="Désignation" required />
-            <input type="text" class="description form-control" placeholder="Description" />
-            <input type="number" class="quantite form-control" placeholder="Qte" min="1" value="1" style="width: 80px; flex: 0 0 80px;" required />
-            <input type="number" class="prixUnitaire form-control" placeholder="P.U" min="0" step="0.01" value="0" style="width: 120px; flex: 0 0 120px;" required />
-            <input type="number" class="input-total total form-control" placeholder="Montant" style="width: 120px; flex: 0 0 120px;" readonly />
-            <button type="button" class="btn-remove" title="Supprimer cette ligne">
-                <i class="bi bi-trash"></i>
-            </button>
-        </div>
-    </template>
+  <template id="ligneDevisTemplate">
+    <div class="ligne-devis">
+      <div>
+        <label class="form-label">Désignation</label>
+        <input type="text" class="designation form-control" placeholder="Désignation" required />
+      </div>
+      <div>
+        <label class="form-label">Description</label>
+        <input type="text" class="description form-control" placeholder="Description" />
+      </div>
+      <div>
+        <label class="form-label">Qté</label>
+        <input type="number" class="quantite form-control" min="1" value="1" required />
+      </div>
+      <div>
+        <label class="form-label">Prix unit.</label>
+        <input type="number" class="prixUnitaire form-control" min="0" step="0.01" value="0" required />
+      </div>
+      <div>
+        <label class="form-label">Montant</label>
+        <input type="number" class="input-total ligne-total-field form-control" readonly />
+      </div>
+      <div style="padding-top: 1.6rem;">
+        <button type="button" class="btn-remove-ligne" title="Supprimer">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </template>
 
-    <script th:src="@{/static/js/devis-form.js}"></script>
+  <footer th:replace="~{fragments/layout :: footer}"></footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/static/js/devis-form.js}"></script>
 </body>
 
 </html>

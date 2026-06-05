@@ -15,6 +15,9 @@ import com.core.forage_app.repository.DemandeStatutRepository;
 
 @Service
 public class DemandeStatutService {
+    private final LocalTime workStart = LocalTime.of(8, 0);
+    private final LocalTime workEnd = LocalTime.of(16, 0);
+
     @Autowired
     private DemandeStatutRepository demandeStatutRepository;
 
@@ -35,9 +38,6 @@ public class DemandeStatutService {
         if (start == null || end == null || !start.isBefore(end)) {
             return 0f;
         }
-
-        LocalTime workStart = LocalTime.of(8, 0);
-        LocalTime workEnd = LocalTime.of(16, 0);
 
         long totalMinutes = 0;
 

@@ -4,39 +4,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const demandeIdInput = document.getElementById("demandeId");
     const demandeLibelleInput = document.getElementById("demandeLibelle");
 
-    if (!referenceInput || !demandeIdInput || !demandeLibelleInput) {
-        return;
+    if (!referenceInput || !demandeIdInput || !demandeLibelleInput) return;
+
+    // ✅ Pré-remplissage au chargement si on est en mode édition
+    const initialRef = referenceInput.value.trim();
+    if (initialRef.length > 0) {
+        fetchDemande(referenceInput, initialRef);
     }
 
     referenceInput.addEventListener("input", function () {
-
         const refValue = this.value.trim();
+        if (refValue.length === 0) return;
+        fetchDemande(this, refValue);
+    });
 
-        if (refValue.length === 0) {
-            return;
-        }
-
-        const url = this.getAttribute("data-url");
+    function fetchDemande(inputEl, refValue) {
+        const url = inputEl.getAttribute("data-url");
 
         fetch(`${url}?reference=${encodeURIComponent(refValue)}`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Erreur HTTP " + response.status);
-                }
+                if (!response.ok) throw new Error("Erreur HTTP " + response.status);
                 return response.json();
             })
             .then(data => {
                 demandeIdInput.value = data.id;
                 demandeLibelleInput.value = data.reference;
-
             })
             .catch(error => {
                 console.error(error);
-
                 demandeIdInput.value = "";
                 demandeLibelleInput.value = "";
             });
-
-    });
+    }
 
 });

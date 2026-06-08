@@ -12,7 +12,7 @@
     <!-- Brand -->
     <a class="navbar-brand" th:href="@{/}">
       <span class="brand-dot"></span>
-      GestioPro
+      ForageApp
     </a>
 
     <!-- Mobile toggle -->
@@ -95,7 +95,7 @@
      Usage: <footer th:replace="~{fragments/layout :: footer}">
      ═════════════════════════════════════════ -->
 <footer th:fragment="footer" class="site-footer">
-  <span class="footer-brand">GestioPro</span>
+  <span class="footer-brand">ForageApp</span>
   <span>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> — Tous droits réservés</span>
   <div class="footer-links">
     <a th:href="@{/demande/list}">Demandes</a>

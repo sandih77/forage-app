@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi des Alertes — GestioPro</title>
+    <title>Suivi des Alertes — ForageApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -137,7 +137,7 @@
     <div class="container py-5">
 
         <div class="text-center mb-5">
-            <h1 style="font-family: serif;">GestioPro <span style="color: #2dd4bf;">•</span> Tableau de Bord</h1>
+            <h1 style="font-family: serif;">ForageApp <span style="color: #2dd4bf;">•</span> Tableau de Bord</h1>
             <p class="txt-secondary">Visualisez l'état global et les alertes de traitement par demande en temps réel</p>
         </div>
 

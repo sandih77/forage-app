@@ -1,6 +1,7 @@
 package com.core.forage_app.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,8 @@ public class DemandeStatutController {
 
     @PostMapping("demandeStatut/save")
     public String save(@ModelAttribute DemandeStatut demandeStatut) {
-        DemandeStatut lastDTS = this.demandeStatutService.findTopByDemandeIdOrderByIdDesc(demandeStatut.getDemande().getId());
+        DemandeStatut lastDTS = this.demandeStatutService
+                .findTopByDemandeIdOrderByIdDesc(demandeStatut.getDemande().getId());
         if (lastDTS != null) {
             float dt = this.demandeStatutService.calculateDT(lastDTS.getDateStatut(), demandeStatut.getDateStatut());
             demandeStatut.setDureeTravail(dt);
@@ -76,7 +78,7 @@ public class DemandeStatutController {
     }
 
     @GetMapping("demandeStatut/list")
-    public String list(Model model){
+    public String list(Model model) {
         model.addAttribute("demandeStatuts", this.demandeStatutService.findAll());
         return "demandeStatut/list";
     }
@@ -85,6 +87,61 @@ public class DemandeStatutController {
     public String delete(@PathVariable("id") int id) {
         DemandeStatut demandeStatut = this.demandeStatutService.findById(id);
         this.demandeStatutService.delete(demandeStatut);
+        return "redirect:/demandeStatut/list";
+    }
+
+    @GetMapping("demandeStatut/edit/{id}")
+    public String showFormEdit(@PathVariable("id") int id, Model model) {
+
+        DemandeStatut demandeStatut = demandeStatutService.findById(id);
+
+        if (demandeStatut == null) {
+            return "redirect:/demandeStatut/list";
+        }
+
+        model.addAttribute("demandeStatut", demandeStatut);
+        model.addAttribute("statuts", statutService.findAll());
+
+        if (demandeStatut.getDemande() != null) {
+            model.addAttribute("demandeReference",
+                    demandeStatut.getDemande().getReference());
+        }
+
+        model.addAttribute("editMode", true);
+
+        return "demandeStatut/form";
+    }
+
+    @PostMapping("demandeStatut/update/{id}")
+    public String update(@PathVariable("id") int id, @ModelAttribute DemandeStatut demandeStatut) {
+
+        DemandeStatut existingDemandeStatut = demandeStatutService.findById(id);
+
+        if (existingDemandeStatut == null) {
+            return "redirect:/demandeStatut/list";
+        }
+
+        existingDemandeStatut.setDateStatut(demandeStatut.getDateStatut());
+        existingDemandeStatut.setObservation(demandeStatut.getObservation());
+        demandeStatutService.save(existingDemandeStatut);
+
+        int idDemande = existingDemandeStatut.getDemande().getId();
+        List<DemandeStatut> allByDemande = demandeStatutService.findByDemandeIdOrderByDateStatutAsc(idDemande);
+
+        for (int i = 1; i < allByDemande.size(); i++) {
+            DemandeStatut prev = allByDemande.get(i - 1);
+            DemandeStatut curr = allByDemande.get(i);
+
+            float dt = demandeStatutService.calculateDT(prev.getDateStatut(), curr.getDateStatut());
+            curr.setDureeTravail(dt);
+            demandeStatutService.save(curr);
+        }
+
+        if (!allByDemande.isEmpty()) {
+            allByDemande.get(0).setDureeTravail(0);
+            demandeStatutService.save(allByDemande.get(0));
+        }
+
         return "redirect:/demandeStatut/list";
     }
 }

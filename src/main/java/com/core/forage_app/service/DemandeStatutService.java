@@ -41,6 +41,10 @@ public class DemandeStatutService {
         this.demandeStatutRepository.save(demandeStatut);
     }
 
+    public List<DemandeStatut> findByDemandeIdOrderByDateStatutAsc(int demandeId) {
+        return this.demandeStatutRepository.findByDemandeIdOrderByDateStatutAsc(demandeId);
+    }
+
     public float calculateDT(LocalDateTime start, LocalDateTime end) {
 
         if (start == null || end == null || !start.isBefore(end)) {
@@ -61,18 +65,16 @@ public class DemandeStatutService {
                 LocalDateTime dayStart = LocalDateTime.of(currentDate, workStart);
                 LocalDateTime dayEnd = LocalDateTime.of(currentDate, workEnd);
 
-                LocalDateTime effectiveStart = currentDate.equals(start.toLocalDate())
+                LocalDateTime effectiveStart = start.toLocalDate().equals(currentDate)
                         ? (start.isAfter(dayStart) ? start : dayStart)
                         : dayStart;
 
-                LocalDateTime effectiveEnd = currentDate.equals(end.toLocalDate())
+                LocalDateTime effectiveEnd = end.toLocalDate().equals(currentDate)
                         ? (end.isBefore(dayEnd) ? end : dayEnd)
                         : dayEnd;
 
                 if (effectiveStart.isBefore(effectiveEnd)) {
-                    totalMinutes += Duration.between(
-                            effectiveStart,
-                            effectiveEnd).toMinutes();
+                    totalMinutes += Duration.between(effectiveStart, effectiveEnd).toMinutes();
                 }
             }
 

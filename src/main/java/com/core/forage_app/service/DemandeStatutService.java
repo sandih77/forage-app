@@ -21,6 +21,14 @@ public class DemandeStatutService {
     @Autowired
     private DemandeStatutRepository demandeStatutRepository;
 
+    public DemandeStatut findById(int id) {
+        return this.demandeStatutRepository.findById(id).orElse(null);
+    }
+
+    public void delete(DemandeStatut demandeStatut) {
+        this.demandeStatutRepository.delete(demandeStatut);
+    }
+
     public DemandeStatut findByDemandeId(int id) {
         return this.demandeStatutRepository.findByDemandeId(id);
     }

@@ -13,6 +13,10 @@ public class DemandeService {
     @Autowired
     DemandeRepository demandeRepository;
 
+    public List<Demande> findAllWithStatus() {
+        return this.demandeRepository.findAllWithStatuts();
+    }
+
     public List<Demande> findAll() {
         return this.demandeRepository.findAll();
     }

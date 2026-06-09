@@ -23,7 +23,9 @@ public class Alerte {
     @JoinColumn(name = "id_statut2")
     Statut statut2;
 
-    float dureeTravail;
+    float dureeTravail1;
+
+    float dureeTravail2;
 
     String couleur;
 
@@ -51,12 +53,20 @@ public class Alerte {
         this.statut2 = statut2;
     }
 
-    public float getDureeTravail() {
-        return dureeTravail;
+    public float getDureeTravail1() {
+        return dureeTravail1;
     }
 
-    public void setDureeTravail(float dureeTravail) {
-        this.dureeTravail = dureeTravail;
+    public void setDureeTravail1(float dureeTravail1) {
+        this.dureeTravail1 = dureeTravail1;
+    }
+
+    public float getDureeTravail2() {
+        return dureeTravail2;
+    }
+
+    public void setDureeTravail2(float dureeTravail2) {
+        this.dureeTravail2 = dureeTravail2;
     }
 
     public String getCouleur() {

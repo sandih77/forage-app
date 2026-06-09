@@ -87,4 +87,12 @@ public class DemandeStatutService {
     public List<DemandeStatut> findAll() {
         return this.demandeStatutRepository.findAll();
     }
+
+    public float getDureeTotaleTravail(int idDemande) {
+        DemandeStatut dernierStatut = demandeStatutRepository.findTopByDemandeIdOrderByDateStatutDesc(idDemande);
+        if (dernierStatut != null && dernierStatut.getStatut().getId() == 9) { 
+            return dernierStatut.getDureeTravail();
+        }
+        return 0f;
+    }
 }

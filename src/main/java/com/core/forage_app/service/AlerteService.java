@@ -2,6 +2,7 @@ package com.core.forage_app.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,32 +24,59 @@ public class AlerteService {
     public List<Alerte> findAll() {
         return this.alerteRepository.findAll();
     }
-    
+
     public List<Map<String, Object>> getAlertesDetailsParDemande(int demandeId) {
-        List<Map<String, Object>> resultats = new ArrayList<>();
+        Map<String, Map<String, Object>> alertesFiltrees = new LinkedHashMap<>();
+
         List<DemandeStatut> historique = demandeStatutRepository.findByDemandeIdOrderByIdAsc(demandeId);
+        List<Alerte> alertes = alerteRepository.findAll();
 
-        if (historique.size() < 2)
-            return resultats;
+        for (Alerte regle : alertes) {
+            long dureeTotale = 0;
+            boolean debutTrouve = false;
 
-        for (int i = 0; i < historique.size() - 1; i++) {
-            DemandeStatut actuel = historique.get(i);
-            DemandeStatut suivant = historique.get(i + 1);
+            for (DemandeStatut ds : historique) {
+                int statutId = ds.getStatut().getId();
 
-            Alerte regle = alerteRepository.findByStatut1IdAndStatut2Id(
-                    actuel.getStatut().getId(), suivant.getStatut().getId());
+                if (statutId == regle.getStatut1().getId()) {
+                    debutTrouve = true;
+                }
 
-            if (regle != null && suivant.getDureeTravail() > regle.getDureeTravail()) {
-                Map<String, Object> alerteMap = new HashMap<>();
-                alerteMap.put("couleur", regle.getCouleur());
-                alerteMap.put("transition",
-                        actuel.getStatut().getLibelle() + " -> " + suivant.getStatut().getLibelle());
-                alerteMap.put("dureeLimite", regle.getDureeTravail());
-                alerteMap.put("dureeReelle", suivant.getDureeTravail());
-                alerteMap.put("depassement", suivant.getDureeTravail() - regle.getDureeTravail());
-                resultats.add(alerteMap);
+                if (debutTrouve
+                        && statutId > regle.getStatut1().getId()
+                        && statutId <= regle.getStatut2().getId()) {
+                    dureeTotale += ds.getDureeTravail();
+                }
+
+                if (statutId == regle.getStatut2().getId()) {
+                    break;
+                }
+            }
+
+            if (dureeTotale >= regle.getDureeTravail1() && dureeTotale <= regle.getDureeTravail2()) {
+                
+                String transitionKey = regle.getStatut1().getId() + "->" + regle.getStatut2().getId();
+                
+                long depassement = (long) (dureeTotale - regle.getDureeTravail1());
+
+                alertesFiltrees.put(transitionKey, creerAlerteMap(regle, dureeTotale, depassement));
             }
         }
-        return resultats;
+
+        return new ArrayList<>(alertesFiltrees.values());
+    }
+
+    private Map<String, Object> creerAlerteMap(Alerte regle, long dureeReelle, long depassement) {
+        Map<String, Object> alerteMap = new HashMap<>();
+        alerteMap.put("couleur", regle.getCouleur());
+        alerteMap.put("transition", regle.getStatut1().getLibelle() + " -> " + regle.getStatut2().getLibelle());
+        
+        alerteMap.put("dureeLimiteMin", regle.getDureeTravail1());
+        alerteMap.put("dureeLimiteMax", regle.getDureeTravail2());
+        alerteMap.put("dureeLimite", regle.getDureeTravail1() + " - " + regle.getDureeTravail2()); 
+        
+        alerteMap.put("dureeReelle", dureeReelle);
+        alerteMap.put("depassement", depassement);
+        return alerteMap;
     }
 }

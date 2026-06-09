@@ -112,7 +112,6 @@
             border-top: 1px solid #2e3447;
         }
 
-        /* Boîtes d'alertes */
         .alerte-item {
             background-color: #222736;
             border: 1px solid #2e3447;
@@ -137,7 +136,7 @@
     <div class="container py-5">
 
         <div class="text-center mb-5">
-            <h1 style="font-family: serif;">ForageApp <span style="color: #2dd4bf;">•</span> Tableau de Bord</h1>
+            <h1 style="font-family: serif;">ForageApp <span style="color: #2dd4bf;">•</span> ETU 004174 - Sandih</h1>
             <p class="txt-secondary">Visualisez l'état global et les alertes de traitement par demande en temps réel</p>
         </div>
 
@@ -156,12 +155,13 @@
                             <th>Commune</th>
                             <th>Lieu</th>
                             <th>Référence</th>
+                            <th>Durée Totale</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="demandesTableBody">
                         <tr>
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <div class="spinner-border text-info" role="status"></div>
                                 <p class="mt-2 txt-secondary mb-0">Chargement des demandes...</p>
                             </td>
@@ -202,6 +202,7 @@
             <td class="item-commune"></td>
             <td class="item-lieu"></td>
             <td><span class="badge-ref item-ref"></span></td>
+            <td><span class="text-info fw-semibold item-duree"></span></td>
             <td class="text-end">
                 <button type="button" class="btn btn-outline-accent btn-sm btn-voir-alertes">
                     <i class="bi bi-bell-fill"></i> Voir Alertes
@@ -224,11 +225,11 @@
                 <h5 class="h6 mb-2 fw-bold text-white transition-title">
                     <i class="bi bi-arrow-right-circle-fill text-muted me-2"></i>
                 </h5>
-                <span class="badge bg-danger rounded-pill px-2 py-1 depassement-badge" style="font-size: 0.75rem;"></span>
+                <span class="badge rounded-pill px-2 py-1 depassement-badge" style="font-size: 0.75rem;"></span>
             </div>
             <div class="row g-2 mt-1 txt-secondary">
                 <div class="col-6">
-                    <small>Temps max alloué :</small> <span class="text-white fw-medium limite-field"></span>
+                    <small>Intervalle alloué :</small> <span class="text-white fw-medium limite-field"></span>
                 </div>
                 <div class="col-6">
                     <small>Temps réel consommé :</small> <span class="text-white fw-medium reelle-field"></span>
@@ -259,10 +260,10 @@
                     return res.json();
                 })
                 .then(demandes => {
-                    demandesTableBody.innerHTML = ""; 
+                    demandesTableBody.innerHTML = "";
 
                     if (demandes.length === 0) {
-                        demandesTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 txt-secondary">Aucune demande enregistrée.</td></tr>`;
+                        demandesTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 txt-secondary">Aucune demande enregistrée.</td></tr>`;
                         return;
                     }
 
@@ -277,6 +278,8 @@
                         clone.querySelector(".item-lieu").innerText = demande.lieu || "—";
                         clone.querySelector(".item-ref").innerText = demande.reference;
 
+                        clone.querySelector(".item-duree").innerText = demande.dureeTotaleTravail;
+
                         clone.querySelector(".btn-voir-alertes").addEventListener("click", function() {
                             ouvrirModaleAlertes(demande.id, demande.reference);
                         });
@@ -287,7 +290,7 @@
                 .catch(err => {
                     mainErrorMessage.innerText = "Erreur lors de la récupération de la liste : " + err.message;
                     mainErrorBlock.classList.remove("hidden");
-                    demandesTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Échec du chargement.</td></tr>`;
+                    demandesTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Échec du chargement.</td></tr>`;
                 });
 
             function ouvrirModaleAlertes(id, reference) {
@@ -311,16 +314,39 @@
                         } else {
                             const templateAlerteItem = document.getElementById("templateAlerteItem");
 
+                            const colorMapping = {
+                                "rouge": {
+                                    hex: "#ef4444",
+                                    bgClass: "bg-danger"
+                                },
+                                "orange": {
+                                    hex: "#f97316",
+                                    bgClass: "bg-warning text-dark"
+                                },
+                                "vert": {
+                                    hex: "#22c55e",
+                                    bgClass: "bg-success"
+                                }
+                            };
+
                             alertes.forEach(alt => {
                                 const cloneAlt = templateAlerteItem.content.cloneNode(true);
-
                                 const box = cloneAlt.querySelector(".alerte-item");
-                                box.style.borderLeft = `5px solid ${alt.couleur || '#f87171'}`;
+                                const badge = cloneAlt.querySelector(".depassement-badge");
+
+                                const dbColor = alt.couleur ? alt.couleur.trim().toLowerCase() : "";
+                                const colorConfig = colorMapping[dbColor] || {
+                                    hex: "#f87171",
+                                    bgClass: "bg-danger"
+                                };
+
+                                box.style.borderLeft = `5px solid ${colorConfig.hex}`;
+                                badge.className = `badge rounded-pill px-2 py-1 depassement-badge ${colorConfig.bgClass}`;
 
                                 cloneAlt.querySelector(".transition-title").innerHTML += alt.transition;
-                                cloneAlt.querySelector(".depassement-badge").innerText = `Retard : ${alt.depassement}`;
-                                cloneAlt.querySelector(".limite-field").innerText = alt.dureeLimite;
-                                cloneAlt.querySelector(".reelle-field").innerText = alt.dureeReelle;
+                                cloneAlt.querySelector(".depassement-badge").innerText = `Retard : +${alt.depassement}m`;
+                                cloneAlt.querySelector(".limite-field").innerText = alt.dureeLimite + " min";
+                                cloneAlt.querySelector(".reelle-field").innerText = alt.dureeReelle + " min";
 
                                 modalAlertesContainer.appendChild(cloneAlt);
                             });

@@ -30,7 +30,7 @@ public class AlerteController {
 
     @GetMapping("/demande/api/listAll")
     public List<DemandeDTO> listAll() {
-        return demandeService.findAll()
+        return demandeService.findAllWithStatus()
                 .stream()
                 .map(DemandeDTO::new)
                 .toList();
